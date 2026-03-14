@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestión Fiscal 347</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%); }
+    .card-hover { transition: all 0.2s ease; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.12); }
+    .tab-active { border-bottom: 3px solid #2563eb; color: #2563eb; font-weight: 600; }
+    .badge-pendiente { background: #fef3c7; color: #92400e; }
+    .badge-proceso { background: #dbeafe; color: #1e40af; }
+    .badge-completado { background: #d1fae5; color: #065f46; }
+    .badge-cancelado { background: #fee2e2; color: #991b1b; }
+    .badge-nueva { background: #ede9fe; color: #5b21b6; }
+    .badge-activo { background: #d1fae5; color: #065f46; }
+    .badge-inactivo { background: #f3f4f6; color: #6b7280; }
+    .sidebar-item { transition: all 0.15s ease; border-radius: 8px; }
+    .sidebar-item:hover { background: rgba(255,255,255,0.15); }
+    .sidebar-item.active { background: rgba(255,255,255,0.2); font-weight: 600; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 50; display: flex; align-items: center; justify-content: center; }
+    .animate-fade { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .input-field { border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 10px 14px; width: 100%; font-size: 14px; transition: border-color 0.2s; outline: none; }
+    .input-field:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    select.input-field { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 18px; padding-right: 36px; }
+    .btn-primary { background: #2563eb; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: background 0.2s; border: none; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-secondary { background: #f3f4f6; color: #374151; padding: 10px 20px; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer; transition: background 0.2s; border: none; }
+    .btn-secondary:hover { background: #e5e7eb; }
+    .section { display: none; }
+    .section.active { display: block; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- ======================== LANDING PAGE ======================== -->
+<div id="landing" class="section active">
+  <!-- Header -->
+  <header class="gradient-bg text-white shadow-lg">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-scale-balanced text-blue-600 text-lg"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold">Gestión Fiscal 347</h1>
+          <p class="text-blue-200 text-xs">gestionfiscal347@gmail.com · +34 060 408 0483</p>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <a href="#servicios" class="text-blue-100 hover:text-white transition">Servicios</a>
+        <a href="#sobre" class="text-blue-100 hover:text-white transition">Sobre nosotros</a>
+        <a href="#contacto" class="text-blue-100 hover:text-white transition">Contacto</a>
+        <button onclick="showSection('portal')" class="bg-white text-blue-600 font-semibold px-5 py-2 rounded-lg hover:bg-blue-50 transition text-sm">
+          Área de Clientes
+        </button>
+      </nav>
+      <button onclick="showSection('portal')" class="md:hidden bg-white text-blue-600 font-semibold px-4 py-2 rounded-lg text-sm">
+        Mi Área
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="gradient-bg text-white py-20 px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">Gestión Fiscal 347,<br/><span class="text-blue-200">siempre a tu lado</span></h2>
+      <p class="text-blue-100 text-lg mb-10 max-w-2xl mx-auto">Gestionamos tus impuestos, contabilidad y obligaciones fiscales para que tú te centres en hacer crecer tu negocio.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button onclick="showSection('solicitud')" class="bg-white text-blue-700 font-bold px-8 py-4 rounded-xl text-lg hover:bg-blue-50 transition card-hover">
+          <i class="fa-solid fa-paper-plane mr-2"></i>Solicitar servicio
+        </button>
+        <button onclick="showSection('portal')" class="border-2 border-white text-white font-bold px-8 py-4 rounded-xl text-lg hover:bg-white hover:text-blue-700 transition">
+          <i class="fa-solid fa-user mr-2"></i>Área de clientes
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Servicios -->
+  <section id="servicios" class="py-16 px-6 bg-white">
+    <div class="max-w-6xl mx-auto">
+      <h3 class="text-3xl font-bold text-center text-gray-800 mb-4">Nuestros servicios</h3>
+      <p class="text-center text-gray-500 mb-12">Todo lo que necesitas para cumplir con Hacienda sin estrés</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-gray-50 rounded-2xl p-6 card-hover border border-gray-100">
+          <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+            <i class="fa-solid fa-file-invoice text-blue-600 text-xl"></i>
+          </div>
+          <h4 class="font-bold text-gray-800 mb-2">Declaración de la Renta</h4>
+          <p class="text-gray-500 text-sm">Preparamos y presentamos tu IRPF asegurando la máxima optimización fiscal.</p>
+        </div>
+        <div class="bg-gray-50 rounded-2xl p-6 card-hover border border-gray-100">
+          <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+            <i class="fa-solid fa-receipt text-green-600 text-xl"></i>
+          </div>
+          <h4 class="font-bold text-gray-800 mb-2">IVA Trimestral</h4>
+          <p class="text-gray-500 text-sm">Gestión de declaraciones trimestrales y anuales de IVA para autónomos y empresas.</p>
+        </div>
+        <div class="bg-gray-50 rounded-2xl p-6 card-hover border border-gray-100">
+          <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+            <i class="fa-solid fa-building text-purple-600 text-xl"></i>
+          </div>
+          <h4 class="font-bold text-gray-800 mb-2">Impuesto de Sociedades</h4>
+          <p class="text-gray-500 text-sm">Presentación del IS con análisis previo para minimizar tu carga fiscal legalmente.</p>
+        </div>
+        <div class="bg-gray-50 rounded-2xl p-6 card-hover border border-gray-100">
+          <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mb-4">
+            <i class="fa-solid fa-calculator text-yellow-600 text-xl"></i>
+          </div>
+          <h4 class="font-bold text-gray-800 mb-2">Contabilidad</h4>
+          <p class="text-gray-500 text-sm">Llevanza de libros contables, balances y cuentas anuales para tu empresa.</p>
+        </div>
+        <div class="bg-gray-50 rounded-2xl p-6 card-hover border border-gray-100">
+          <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-4">
+            <i class="fa-solid fa-handshake text-red-600 text-xl"></i>
+          </div>
+          <h4 class="font-bold text-gray-800 mb-2">Constitución de empresa</h4>
+          <p class="text-gray-500 text-sm">Te guiamos en todo el proceso de creación de tu sociedad o alta como autónomo.</p>
+        </div>
+        <div class="bg-gray-50 rounded-2xl p-6 card-hover border border-gray-100">
+          <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mb-4">
+            <i class="fa-solid fa-comments text-indigo-600 text-xl"></i>
+          </div>
+          <h4 class="font-bold text-gray-800 mb-2">Consultas fiscales</h4>
+          <p class="text-gray-500 text-sm">Resolvemos tus dudas fiscales con asesoramiento personalizado y experto.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Por qué nosotros -->
+  <section id="sobre" class="py-16 px-6 bg-gray-50">
+    <div class="max-w-6xl mx-auto">
+      <h3 class="text-3xl font-bold text-center text-gray-800 mb-12">¿Por qué elegirnos?</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div class="space-y-6">
+          <div class="flex gap-4">
+            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+              <i class="fa-solid fa-check text-blue-600"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-800 mb-1">Experiencia contrastada</h4>
+              <p class="text-gray-500 text-sm">Años asesorando a autónomos y empresas de todos los sectores en sus obligaciones fiscales.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+              <i class="fa-solid fa-shield-halved text-green-600"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-800 mb-1">Gestión 100% online</h4>
+              <p class="text-gray-500 text-sm">Sin desplazamientos. Toda la documentación, comunicación y seguimiento de forma digital.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+              <i class="fa-solid fa-bell text-purple-600"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-800 mb-1">Nunca más un plazo olvidado</h4>
+              <p class="text-gray-500 text-sm">Te avisamos antes de cada vencimiento fiscal para que siempre estés al día.</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
+          <div class="text-5xl font-bold text-blue-600 mb-2">+200</div>
+          <div class="text-gray-500 mb-6">clientes satisfechos</div>
+          <div class="text-5xl font-bold text-green-600 mb-2">100%</div>
+          <div class="text-gray-500 mb-6">declaraciones en plazo</div>
+          <div class="text-5xl font-bold text-purple-600 mb-2">15+</div>
+          <div class="text-gray-500">años de experiencia</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="contacto" class="py-16 px-6 gradient-bg text-white text-center">
+    <div class="max-w-2xl mx-auto">
+      <h3 class="text-3xl font-bold mb-4">¿Listo para simplificar tus impuestos?</h3>
+      <p class="text-blue-100 mb-8">Rellena el formulario y te contactamos en menos de 24 horas.</p>
+      <button onclick="showSection('solicitud')" class="bg-white text-blue-700 font-bold px-10 py-4 rounded-xl text-lg hover:bg-blue-50 transition card-hover">
+        Solicitar información gratuita <i class="fa-solid fa-arrow-right ml-2"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-gray-400 py-8 px-6 text-center text-sm">
+    <p>© 2026 Gestión Fiscal 347 · gestionfiscal347@gmail.com · +34 060 408 0483 — Todos los derechos reservados</p>
+  </footer>
+</div>
+
+<!-- ======================== SOLICITUD DE SERVICIO ======================== -->
+<div id="solicitud" class="section">
+  <header class="bg-white shadow-sm border-b border-gray-100">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex items-center gap-4">
+      <button onclick="showSection('landing')" class="text-gray-400 hover:text-gray-600 transition">
+        <i class="fa-solid fa-arrow-left text-lg"></i>
+      </button>
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-scale-balanced text-blue-600"></i>
+        </div>
+        <span class="font-bold text-gray-800">Gestión Fiscal 347</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-2xl mx-auto px-6 py-12">
+    <div class="text-center mb-10">
+      <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <i class="fa-solid fa-paper-plane text-white text-2xl"></i>
+      </div>
+      <h2 class="text-3xl font-bold text-gray-800 mb-2">Solicitar servicio</h2>
+      <p class="text-gray-500">Cuéntanos qué necesitas y te contactamos enseguida</p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 animate-fade">
+      <div id="form-success" class="hidden text-center py-8">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fa-solid fa-check text-green-600 text-2xl"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800 mb-2">¡Solicitud enviada!</h3>
+        <p class="text-gray-500 mb-6">Te contactaremos en menos de 24 horas.</p>
+        <button onclick="resetForm()" class="btn-primary">Enviar otra solicitud</button>
+      </div>
+
+      <form id="solicitud-form" class="space-y-5" onsubmit="submitSolicitud(event)">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Nombre completo *</label>
+            <input id="s-nombre" type="text" required placeholder="Juan García López" class="input-field"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Email *</label>
+            <input id="s-email" type="email" required placeholder="juan@empresa.com" class="input-field"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Teléfono</label>
+            <input id="s-telefono" type="tel" placeholder="612 345 678" class="input-field"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Empresa / Nombre comercial</label>
+            <input id="s-empresa" type="text" placeholder="Mi Empresa S.L." class="input-field"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">NIF / CIF</label>
+            <input id="s-nif" type="text" placeholder="B12345678" class="input-field"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Tipo de servicio *</label>
+            <select id="s-servicio" required class="input-field">
+              <option value="">Seleccionar...</option>
+              <option>Declaración de la Renta</option>
+              <option>IVA</option>
+              <option>Impuesto de Sociedades</option>
+              <option>Contabilidad</option>
+              <option>Constitución de empresa</option>
+              <option>Consulta fiscal</option>
+              <option>Otro</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Mensaje / Descripción de tu situación</label>
+          <textarea id="s-mensaje" rows="4" placeholder="Cuéntanos brevemente tu situación y qué necesitas..." class="input-field resize-none"></textarea>
+        </div>
+        <button type="submit" class="btn-primary w-full py-3 text-base">
+          <i class="fa-solid fa-paper-plane mr-2"></i>Enviar solicitud
+        </button>
+        <p class="text-xs text-gray-400 text-center">Al enviar el formulario aceptas que nos pongamos en contacto contigo. Tus datos no serán cedidos a terceros.</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== ÁREA DE CLIENTES ======================== -->
+<div id="portal" class="section">
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 gradient-bg text-white flex-shrink-0 flex flex-col min-h-screen">
+      <div class="p-6 border-b border-blue-400 border-opacity-30">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 bg-white rounded-lg flex items-center justify-center">
+            <i class="fa-solid fa-scale-balanced text-blue-600"></i>
+          </div>
+          <div>
+            <p class="font-bold text-sm">Gestión Fiscal 347</p>
+            <p class="text-blue-200 text-xs">gestionfiscal347@gmail.com · +34 060 408 0483</p>
+          </div>
+        </div>
+      </div>
+      <nav class="p-4 flex-1 space-y-1">
+        <button onclick="setTab('dashboard')" id="nav-dashboard" class="sidebar-item active w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm">
+          <i class="fa-solid fa-chart-pie w-4"></i> Dashboard
+        </button>
+        <button onclick="setTab('clientes')" id="nav-clientes" class="sidebar-item w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm">
+          <i class="fa-solid fa-users w-4"></i> Clientes
+        </button>
+        <button onclick="setTab('expedientes')" id="nav-expedientes" class="sidebar-item w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm">
+          <i class="fa-solid fa-folder-open w-4"></i> Expedientes
+        </button>
+        <button onclick="setTab('solicitudes')" id="nav-solicitudes" class="sidebar-item w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm">
+          <i class="fa-solid fa-inbox w-4"></i> Solicitudes
+          <span id="badge-solicitudes" class="ml-auto bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-0.5 rounded-full hidden">0</span>
+        </button>
+        <button onclick="setTab('documentos')" id="nav-documentos" class="sidebar-item w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm">
+          <i class="fa-solid fa-file-lines w-4"></i> Documentos e Informes
+        </button>
+      </nav>
+      <div class="p-4 border-t border-blue-400 border-opacity-30">
+        <button onclick="showSection('landing')" class="sidebar-item w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm text-blue-200">
+          <i class="fa-solid fa-globe w-4"></i> Ver web pública
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="flex-1 overflow-auto bg-gray-50">
+      <!-- Dashboard -->
+      <div id="tab-dashboard" class="p-8">
+        <div class="mb-8">
+          <h2 class="text-2xl font-bold text-gray-800">Dashboard</h2>
+          <p class="text-gray-500">Resumen general de tu asesoría</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 card-hover">
+            <div class="flex justify-between items-start mb-4">
+              <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                <i class="fa-solid fa-users text-blue-600"></i>
+              </div>
+              <span class="text-xs text-green-500 font-medium bg-green-50 px-2 py-1 rounded-full">Activos</span>
+            </div>
+            <p class="text-3xl font-bold text-gray-800" id="stat-clientes">—</p>
+            <p class="text-gray-500 text-sm mt-1">Clientes</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 card-hover">
+            <div class="flex justify-between items-start mb-4">
+              <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                <i class="fa-solid fa-folder-open text-purple-600"></i>
+              </div>
+              <span class="text-xs text-blue-500 font-medium bg-blue-50 px-2 py-1 rounded-full">Total</span>
+            </div>
+            <p class="text-3xl font-bold text-gray-800" id="stat-expedientes">—</p>
+            <p class="text-gray-500 text-sm mt-1">Expedientes</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 card-hover">
+            <div class="flex justify-between items-start mb-4">
+              <div class="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center">
+                <i class="fa-solid fa-clock text-yellow-600"></i>
+              </div>
+              <span class="text-xs text-yellow-500 font-medium bg-yellow-50 px-2 py-1 rounded-full">Urgentes</span>
+            </div>
+            <p class="text-3xl font-bold text-gray-800" id="stat-pendientes">—</p>
+            <p class="text-gray-500 text-sm mt-1">Pendientes</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 card-hover">
+            <div class="flex justify-between items-start mb-4">
+              <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                <i class="fa-solid fa-inbox text-green-600"></i>
+              </div>
+              <span class="text-xs text-purple-500 font-medium bg-purple-50 px-2 py-1 rounded-full">Nuevas</span>
+            </div>
+            <p class="text-3xl font-bold text-gray-800" id="stat-solicitudes">—</p>
+            <p class="text-gray-500 text-sm mt-1">Solicitudes</p>
+          </div>
+        </div>
+
+        <!-- Próximos vencimientos -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+          <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-calendar-days text-blue-600"></i> Próximos vencimientos
+          </h3>
+          <div id="proximos-vencimientos" class="space-y-3">
+            <p class="text-gray-400 text-sm">Cargando...</p>
+          </div>
+        </div>
+
+        <!-- Expedientes recientes -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-clock-rotate-left text-blue-600"></i> Expedientes recientes
+          </h3>
+          <div id="expedientes-recientes" class="space-y-3">
+            <p class="text-gray-400 text-sm">Cargando...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clientes -->
+      <div id="tab-clientes" class="p-8 hidden">
+        <div class="flex justify-between items-center mb-8">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-800">Clientes</h2>
+            <p class="text-gray-500">Gestiona tu cartera de clientes</p>
+          </div>
+          <button onclick="openModal('modal-cliente')" class="btn-primary">
+            <i class="fa-solid fa-plus mr-2"></i>Nuevo cliente
+          </button>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div class="p-5 border-b border-gray-100">
+            <input type="text" id="search-clientes" placeholder="Buscar por nombre, NIF o email..." class="input-field" style="max-width:360px" oninput="filterClientes()"/>
+          </div>
+          <div id="tabla-clientes" class="divide-y divide-gray-50">
+            <p class="p-6 text-gray-400 text-sm">Cargando...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Expedientes -->
+      <div id="tab-expedientes" class="p-8 hidden">
+        <div class="flex justify-between items-center mb-8">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-800">Expedientes</h2>
+            <p class="text-gray-500">Todas las gestiones en curso</p>
+          </div>
+          <button onclick="openModal('modal-expediente')" class="btn-primary">
+            <i class="fa-solid fa-plus mr-2"></i>Nuevo expediente
+          </button>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div class="p-5 border-b border-gray-100 flex gap-2 flex-wrap">
+            <button onclick="filterExpedientes('all')" id="fil-all" class="text-xs font-medium px-3 py-1.5 rounded-full bg-blue-600 text-white">Todos</button>
+            <button onclick="filterExpedientes('Pendiente')" id="fil-Pendiente" class="text-xs font-medium px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">Pendiente</button>
+            <button onclick="filterExpedientes('En proceso')" id="fil-En proceso" class="text-xs font-medium px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">En proceso</button>
+            <button onclick="filterExpedientes('Completado')" id="fil-Completado" class="text-xs font-medium px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">Completado</button>
+          </div>
+          <div id="tabla-expedientes" class="divide-y divide-gray-50">
+            <p class="p-6 text-gray-400 text-sm">Cargando...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Solicitudes -->
+      <div id="tab-solicitudes" class="p-8 hidden">
+        <div class="mb-8">
+          <h2 class="text-2xl font-bold text-gray-800">Solicitudes de servicio</h2>
+          <p class="text-gray-500">Peticiones de nuevos clientes potenciales</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div id="tabla-solicitudes" class="divide-y divide-gray-50">
+            <p class="p-6 text-gray-400 text-sm">Cargando...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Documentos e Informes -->
+      <div id="tab-documentos" class="p-8 hidden">
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold text-gray-800">Documentos e Informes</h2>
+          <p class="text-gray-500">Gestión documental y generación automática de informes financieros</p>
+        </div>
+
+        <!-- GENERADOR DE INFORMES FINANCIEROS -->
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 mb-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-chart-line text-white"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-gray-800 text-base">Generador de Informes Financieros</h3>
+              <p class="text-gray-500 text-xs">Sube el Excel con Balance y Cuenta de PyG — el informe PDF se genera automáticamente</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Cliente *</label>
+              <select id="inf-cliente" class="input-field" onchange="loadClienteNIF()">
+                <option value="">Selecciona un cliente...</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Expediente (opcional)</label>
+              <select id="inf-expediente" class="input-field">
+                <option value="">Sin expediente asociado</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">NIF empresa</label>
+              <input id="inf-nif" type="text" class="input-field" placeholder="B12345678"/>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Ejercicio *</label>
+              <input id="inf-ejercicio" type="text" class="input-field" placeholder="2023" value="2023"/>
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Archivo Excel (Balance + PyG) *</label>
+              <div id="drop-zone" class="border-2 border-dashed border-blue-300 rounded-xl p-6 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition"
+                   onclick="document.getElementById('inf-excel').click()"
+                   ondragover="event.preventDefault(); this.classList.add('border-blue-500','bg-blue-50')"
+                   ondragleave="this.classList.remove('border-blue-500','bg-blue-50')"
+                   ondrop="handleDrop(event)">
+                <i class="fa-solid fa-file-excel text-green-500 text-3xl mb-2"></i>
+                <p class="text-sm text-gray-500" id="drop-text">Arrastra el Excel aquí o <span class="text-blue-600 font-medium">haz clic para seleccionar</span></p>
+                <p class="text-xs text-gray-400 mt-1">Formato: .xlsx — Balance de Situación + Cuenta de PyG</p>
+              </div>
+              <input id="inf-excel" type="file" accept=".xlsx,.xls" class="hidden" onchange="onExcelSelected(this)"/>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="generarInforme()" id="btn-generar" class="btn-primary flex items-center gap-2">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              Generar Informe PDF
+            </button>
+            <div id="inf-status" class="hidden flex items-center gap-2 text-sm text-blue-600">
+              <div class="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
+              <span id="inf-status-text">Generando informe...</span>
+            </div>
+          </div>
+          <!-- Resultado -->
+          <div id="inf-resultado" class="hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <i class="fa-solid fa-circle-check text-green-600 text-xl"></i>
+              <div>
+                <p class="font-semibold text-green-800 text-sm">¡Informe generado correctamente!</p>
+                <p class="text-green-600 text-xs" id="inf-resultado-nombre"></p>
+              </div>
+            </div>
+            <a id="inf-resultado-link" href="#" target="_blank" class="btn-primary text-sm py-2 px-4">
+              <i class="fa-solid fa-download mr-1"></i>Descargar PDF
+            </a>
+          </div>
+          <div id="inf-error" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+            <p class="text-red-700 text-sm"><i class="fa-solid fa-triangle-exclamation mr-2"></i><span id="inf-error-text"></span></p>
+          </div>
+        </div>
+
+        <!-- LISTADO DE DOCUMENTOS -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+          <div class="p-5 border-b border-gray-100 flex justify-between items-center">
+            <h3 class="font-bold text-gray-800 flex items-center gap-2">
+              <i class="fa-solid fa-folder-open text-blue-600"></i> Todos los documentos
+            </h3>
+            <span id="docs-count" class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-full">—</span>
+          </div>
+          <div id="lista-documentos" class="divide-y divide-gray-50 p-2">
+            <div class="p-8 text-center text-gray-400 text-sm">Cargando documentos...</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ======================== MODALES ======================== -->
+<!-- Modal Nuevo Cliente -->
+<div id="modal-cliente" class="modal-overlay hidden" onclick="closeModalOutside(event, 'modal-cliente')">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8 animate-fade" onclick="event.stopPropagation()">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl font-bold text-gray-800">Nuevo cliente</h3>
+      <button onclick="closeModal('modal-cliente')" class="text-gray-400 hover:text-gray-600">
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+    </div>
+    <form onsubmit="saveCliente(event)" class="space-y-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div class="col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Nombre / Razón social *</label>
+          <input id="c-nombre" type="text" required class="input-field" placeholder="García Transportes S.L."/>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Email *</label>
+          <input id="c-email" type="email" required class="input-field" placeholder="contacto@empresa.com"/>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Teléfono</label>
+          <input id="c-telefono" type="tel" class="input-field" placeholder="612 345 678"/>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">NIF / CIF</label>
+          <input id="c-nif" type="text" class="input-field" placeholder="B12345678"/>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Tipo</label>
+          <select id="c-tipo" class="input-field">
+            <option>Empresa</option>
+            <option>Autónomo</option>
+            <option>Particular</option>
+          </select>
+        </div>
+        <div class="col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Notas</label>
+          <textarea id="c-notas" rows="2" class="input-field resize-none" placeholder="Observaciones..."></textarea>
+        </div>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="button" onclick="closeModal('modal-cliente')" class="btn-secondary flex-1">Cancelar</button>
+        <button type="submit" class="btn-primary flex-1">Guardar cliente</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Nuevo Expediente -->
+<div id="modal-expediente" class="modal-overlay hidden" onclick="closeModalOutside(event, 'modal-expediente')">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8 animate-fade" onclick="event.stopPropagation()">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl font-bold text-gray-800">Nuevo expediente</h3>
+      <button onclick="closeModal('modal-expediente')" class="text-gray-400 hover:text-gray-600">
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+    </div>
+    <form onsubmit="saveExpediente(event)" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Título *</label>
+        <input id="e-titulo" type="text" required class="input-field" placeholder="IVA 2T 2026 - Empresa X"/>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Cliente</label>
+          <select id="e-cliente" class="input-field">
+            <option value="">Sin asignar</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Tipo de servicio</label>
+          <select id="e-tipo" class="input-field">
+            <option>Declaración de la Renta</option>
+            <option>IVA</option>
+            <option>Impuesto de Sociedades</option>
+            <option>Contabilidad</option>
+            <option>Constitución de empresa</option>
+            <option>Consulta fiscal</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Estado</label>
+          <select id="e-estado" class="input-field">
+            <option>Pendiente</option>
+            <option>En proceso</option>
+            <option>Completado</option>
+            <option>Cancelado</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Fecha límite</label>
+          <input id="e-fecha" type="date" class="input-field"/>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Descripción</label>
+        <textarea id="e-descripcion" rows="2" class="input-field resize-none" placeholder="Detalle del expediente..."></textarea>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="button" onclick="closeModal('modal-expediente')" class="btn-secondary flex-1">Cancelar</button>
+        <button type="submit" class="btn-primary flex-1">Guardar expediente</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
+  <div class="bg-gray-800 text-white px-5 py-3 rounded-xl shadow-xl text-sm font-medium flex items-center gap-2">
+    <i class="fa-solid fa-check-circle text-green-400"></i>
+    <span id="toast-msg">Guardado correctamente</span>
+  </div>
+</div>
+
+<script>
+// ===================== STATE =====================
+const API_BASE = 'https://api.base44.app/api/apps/69b54a55a358a023b26c0e39/entities';
+let clientesData = [], expedientesData = [], solicitudesData = [];
+let expedientesFilter = 'all';
+
+// ===================== NAVIGATION =====================
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'portal') loadPortalData();
+  window.scrollTo(0,0);
+}
+
+function setTab(tab) {
+  const tabs = ['dashboard','clientes','expedientes','solicitudes','documentos'];
+  tabs.forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('hidden', t !== tab);
+    const nav = document.getElementById('nav-'+t);
+    if (nav) nav.classList.toggle('active', t === tab);
+  });
+}
+
+// ===================== DATA LOADING =====================
+async function loadPortalData() {
+  try {
+    const [c, e, s] = await Promise.all([
+      fetchEntities('Cliente'),
+      fetchEntities('Expediente'),
+      fetchEntities('SolicitudServicio')
+    ]);
+    clientesData = c; expedientesData = e; solicitudesData = s;
+    renderDashboard(); renderClientes(); renderExpedientes(); renderSolicitudes(); populateInformeClientes(); renderDocumentos();
+  } catch(err) { console.error(err); }
+}
+
+async function fetchEntities(name) {
+  const res = await fetch(`${API_BASE}/${name}/`, { headers: {'Content-Type':'application/json'} });
+  if (!res.ok) return [];
+  const data = await res.json();
+  return Array.isArray(data) ? data : (data.items || []);
+}
+
+// ===================== DASHBOARD =====================
+function renderDashboard() {
+  document.getElementById('stat-clientes').textContent = clientesData.filter(c => c.data?.estado === 'Activo').length;
+  document.getElementById('stat-expedientes').textContent = expedientesData.length;
+  document.getElementById('stat-pendientes').textContent = expedientesData.filter(e => ['Pendiente','En proceso'].includes(e.data?.estado)).length;
+  const nuevas = solicitudesData.filter(s => s.data?.estado === 'Nueva').length;
+  document.getElementById('stat-solicitudes').textContent = nuevas;
+  const badge = document.getElementById('badge-solicitudes');
+  if (nuevas > 0) { badge.textContent = nuevas; badge.classList.remove('hidden'); }
+
+  // Próximos vencimientos
+  const hoy = new Date();
+  const proximos = expedientesData
+    .filter(e => e.data?.fecha_limite && ['Pendiente','En proceso'].includes(e.data?.estado))
+    .sort((a,b) => new Date(a.data.fecha_limite) - new Date(b.data.fecha_limite))
+    .slice(0, 5);
+
+  const el = document.getElementById('proximos-vencimientos');
+  if (!proximos.length) { el.innerHTML = '<p class="text-gray-400 text-sm">No hay vencimientos próximos</p>'; return; }
+  el.innerHTML = proximos.map(e => {
+    const dias = Math.ceil((new Date(e.data.fecha_limite) - hoy) / 86400000);
+    const color = dias <= 7 ? 'text-red-600 bg-red-50' : dias <= 30 ? 'text-yellow-600 bg-yellow-50' : 'text-green-600 bg-green-50';
+    const fecha = new Date(e.data.fecha_limite).toLocaleDateString('es-ES');
+    return `<div class="flex items-center justify-between py-2">
+      <div>
+        <p class="font-medium text-gray-800 text-sm">${e.data.titulo || 'Sin título'}</p>
+        <p class="text-gray-400 text-xs">${e.data.tipo_servicio || ''}</p>
+      </div>
+      <div class="text-right">
+        <p class="text-xs font-medium ${color} px-2 py-1 rounded-full">${dias > 0 ? 'En '+dias+' días' : dias === 0 ? 'Hoy' : 'Vencido'}</p>
+        <p class="text-xs text-gray-400 mt-1">${fecha}</p>
+      </div>
+    </div>`;
+  }).join('<hr class="border-gray-50"/>');
+
+  // Expedientes recientes
+  const recientes = [...expedientesData].sort((a,b) => new Date(b.created_date) - new Date(a.created_date)).slice(0,4);
+  document.getElementById('expedientes-recientes').innerHTML = recientes.map(e => `
+    <div class="flex items-center justify-between py-2">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-folder text-blue-400 text-xs"></i>
+        </div>
+        <div>
+          <p class="font-medium text-gray-800 text-sm">${e.data.titulo || 'Sin título'}</p>
+          <p class="text-gray-400 text-xs">${e.data.tipo_servicio || ''}</p>
+        </div>
+      </div>
+      ${badgeEstado(e.data.estado)}
+    </div>
+  `).join('<hr class="border-gray-50"/>');
+}
+
+// ===================== CLIENTES =====================
+function renderClientes(data) {
+  const lista = data || clientesData;
+  const el = document.getElementById('tabla-clientes');
+  if (!lista.length) { el.innerHTML = '<p class="p-6 text-gray-400 text-sm">No hay clientes</p>'; return; }
+  el.innerHTML = lista.map(c => `
+    <div class="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition">
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center text-white font-bold text-sm">
+          ${(c.data.nombre||'?')[0].toUpperCase()}
+        </div>
+        <div>
+          <p class="font-semibold text-gray-800">${c.data.nombre || '—'}</p>
+          <p class="text-gray-400 text-xs">${c.data.email || ''} ${c.data.nif ? '· ' + c.data.nif : ''}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-500">${c.data.tipo || ''}</span>
+        ${badgeEstadoCliente(c.data.estado)}
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterClientes() {
+  const q = document.getElementById('search-clientes').value.toLowerCase();
+  renderClientes(clientesData.filter(c =>
+    (c.data.nombre||'').toLowerCase().includes(q) ||
+    (c.data.email||'').toLowerCase().includes(q) ||
+    (c.data.nif||'').toLowerCase().includes(q)
+  ));
+}
+
+// ===================== EXPEDIENTES =====================
+function renderExpedientes(data) {
+  const lista = (data || expedientesData).filter(e =>
+    expedientesFilter === 'all' || e.data.estado === expedientesFilter
+  );
+  const el = document.getElementById('tabla-expedientes');
+  if (!lista.length) { el.innerHTML = '<p class="p-6 text-gray-400 text-sm">No hay expedientes</p>'; return; }
+  el.innerHTML = lista.map(e => {
+    const cliente = clientesData.find(c => c.id === e.data.cliente_id);
+    const fecha = e.data.fecha_limite ? new Date(e.data.fecha_limite).toLocaleDateString('es-ES') : '—';
+    return `<div class="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition">
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center">
+          <i class="fa-solid fa-folder-open text-purple-400 text-sm"></i>
+        </div>
+        <div>
+          <p class="font-semibold text-gray-800">${e.data.titulo || '—'}</p>
+          <p class="text-gray-400 text-xs">${e.data.tipo_servicio || ''} ${cliente ? '· ' + cliente.data.nombre : ''}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-xs text-gray-400"><i class="fa-solid fa-calendar mr-1"></i>${fecha}</span>
+        ${badgeEstado(e.data.estado)}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterExpedientes(estado) {
+  expedientesFilter = estado;
+  document.querySelectorAll('[id^="fil-"]').forEach(b => {
+    b.className = 'text-xs font-medium px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200';
+  });
+  const active = document.getElementById('fil-'+estado);
+  if (active) active.className = 'text-xs font-medium px-3 py-1.5 rounded-full bg-blue-600 text-white';
+  renderExpedientes();
+}
+
+// ===================== SOLICITUDES =====================
+function renderSolicitudes() {
+  const el = document.getElementById('tabla-solicitudes');
+  if (!solicitudesData.length) { el.innerHTML = '<p class="p-6 text-gray-400 text-sm">No hay solicitudes de momento</p>'; return; }
+  el.innerHTML = solicitudesData.map(s => `
+    <div class="px-6 py-4 hover:bg-gray-50 transition">
+      <div class="flex items-start justify-between">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 bg-yellow-50 rounded-xl flex items-center justify-center">
+            <i class="fa-solid fa-user-plus text-yellow-500 text-sm"></i>
+          </div>
+          <div>
+            <p class="font-semibold text-gray-800">${s.data.nombre || '—'}</p>
+            <p class="text-gray-400 text-xs">${s.data.email || ''} ${s.data.empresa ? '· ' + s.data.empresa : ''}</p>
+            <p class="text-gray-500 text-xs mt-1">${s.data.tipo_servicio || ''} ${s.data.mensaje ? '· "' + s.data.mensaje.substring(0,60) + '..."' : ''}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 flex-shrink-0 ml-4">
+          ${badgeSolicitud(s.data.estado)}
+          <select onchange="updateSolicitudEstado('${s.id}', this.value)" class="text-xs border border-gray-200 rounded-lg px-2 py-1 text-gray-600 cursor-pointer">
+            <option ${s.data.estado==='Nueva'?'selected':''}>Nueva</option>
+            <option ${s.data.estado==='Contactado'?'selected':''}>Contactado</option>
+            <option ${s.data.estado==='Presupuestado'?'selected':''}>Presupuestado</option>
+            <option ${s.data.estado==='Aceptado'?'selected':''}>Aceptado</option>
+            <option ${s.data.estado==='Rechazado'?'selected':''}>Rechazado</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function updateSolicitudEstado(id, estado) {
+  await fetch(`${API_BASE}/SolicitudServicio/${id}/`, {
+    method: 'PUT',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({estado})
+  });
+  showToast('Estado actualizado');
+  loadPortalData();
+}
+
+// ===================== FORMS =====================
+async function submitSolicitud(e) {
+  e.preventDefault();
+  const data = {
+    nombre: document.getElementById('s-nombre').value,
+    email: document.getElementById('s-email').value,
+    telefono: document.getElementById('s-telefono').value,
+    empresa: document.getElementById('s-empresa').value,
+    nif: document.getElementById('s-nif').value,
+    tipo_servicio: document.getElementById('s-servicio').value,
+    mensaje: document.getElementById('s-mensaje').value,
+    estado: 'Nueva'
+  };
+  try {
+    const res = await fetch(`${API_BASE}/SolicitudServicio/`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    });
+    if (res.ok) {
+      document.getElementById('solicitud-form').classList.add('hidden');
+      document.getElementById('form-success').classList.remove('hidden');
+    }
+  } catch(err) { alert('Error al enviar. Por favor inténtalo de nuevo.'); }
+}
+
+function resetForm() {
+  document.getElementById('solicitud-form').reset();
+  document.getElementById('solicitud-form').classList.remove('hidden');
+  document.getElementById('form-success').classList.add('hidden');
+}
+
+async function saveCliente(e) {
+  e.preventDefault();
+  const data = {
+    nombre: document.getElementById('c-nombre').value,
+    email: document.getElementById('c-email').value,
+    telefono: document.getElementById('c-telefono').value,
+    nif: document.getElementById('c-nif').value,
+    tipo: document.getElementById('c-tipo').value,
+    estado: 'Activo',
+    notas: document.getElementById('c-notas').value
+  };
+  await fetch(`${API_BASE}/Cliente/`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  });
+  closeModal('modal-cliente');
+  showToast('Cliente guardado');
+  loadPortalData();
+}
+
+async function saveExpediente(e) {
+  e.preventDefault();
+  const data = {
+    titulo: document.getElementById('e-titulo').value,
+    cliente_id: document.getElementById('e-cliente').value,
+    tipo_servicio: document.getElementById('e-tipo').value,
+    estado: document.getElementById('e-estado').value,
+    fecha_limite: document.getElementById('e-fecha').value,
+    descripcion: document.getElementById('e-descripcion').value
+  };
+  await fetch(`${API_BASE}/Expediente/`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  });
+  closeModal('modal-expediente');
+  showToast('Expediente guardado');
+  loadPortalData();
+}
+
+// ===================== MODALES =====================
+function openModal(id) {
+  if (id === 'modal-expediente') {
+    const sel = document.getElementById('e-cliente');
+    sel.innerHTML = '<option value="">Sin asignar</option>' +
+      clientesData.map(c => `<option value="${c.id}">${c.data.nombre}</option>`).join('');
+  }
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+function closeModalOutside(e, id) { if (e.target.id === id) closeModal(id); }
+
+// ===================== BADGES =====================
+function badgeEstado(estado) {
+  const map = { 'Pendiente': 'badge-pendiente', 'En proceso': 'badge-proceso', 'Completado': 'badge-completado', 'Cancelado': 'badge-cancelado' };
+  return `<span class="text-xs px-2 py-1 rounded-full font-medium ${map[estado]||'bg-gray-100 text-gray-500'}">${estado||'—'}</span>`;
+}
+function badgeEstadoCliente(estado) {
+  return `<span class="text-xs px-2 py-1 rounded-full font-medium ${estado==='Activo'?'badge-activo':'badge-inactivo'}">${estado||'—'}</span>`;
+}
+function badgeSolicitud(estado) {
+  const map = { 'Nueva': 'badge-nueva', 'Aceptado': 'badge-completado', 'Rechazado': 'badge-cancelado' };
+  return `<span class="text-xs px-2 py-1 rounded-full font-medium ${map[estado]||'badge-proceso'}">${estado||'—'}</span>`;
+}
+
+// ===================== TOAST =====================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.remove('hidden');
+  setTimeout(() => t.classList.add('hidden'), 3000);
+}
+
+
+// ===================== DOCUMENTOS E INFORMES =====================
+let selectedExcelFile = null;
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.remove('border-blue-500','bg-blue-50');
+  const file = e.dataTransfer.files[0];
+  if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
+    selectedExcelFile = file;
+    document.getElementById('drop-text').innerHTML = `<span class="text-green-600 font-medium">✓ ${file.name}</span>`;
+  }
+}
+
+function onExcelSelected(input) {
+  if (input.files[0]) {
+    selectedExcelFile = input.files[0];
+    document.getElementById('drop-text').innerHTML = `<span class="text-green-600 font-medium">✓ ${selectedExcelFile.name}</span>`;
+  }
+}
+
+function loadClienteNIF() {
+  const clienteId = document.getElementById('inf-cliente').value;
+  const cliente = clientesData.find(c => c.id === clienteId);
+  if (cliente) {
+    document.getElementById('inf-nif').value = cliente.data?.nif || '';
+    // Cargar expedientes del cliente
+    const expSel = document.getElementById('inf-expediente');
+    expSel.innerHTML = '<option value="">Sin expediente asociado</option>';
+    expedientesData.filter(e => e.data?.cliente_id === clienteId).forEach(e => {
+      expSel.innerHTML += `<option value="${e.id}">${e.data?.titulo || 'Sin título'}</option>`;
+    });
+  }
+}
+
+function populateInformeClientes() {
+  const sel = document.getElementById('inf-cliente');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Selecciona un cliente...</option>';
+  clientesData.forEach(c => {
+    sel.innerHTML += `<option value="${c.id}">${c.data?.nombre || '—'}</option>`;
+  });
+}
+
+async function generarInforme() {
+  const clienteId  = document.getElementById('inf-cliente').value;
+  const expedienteId = document.getElementById('inf-expediente').value;
+  const nif        = document.getElementById('inf-nif').value.trim();
+  const ejercicio  = document.getElementById('inf-ejercicio').value.trim();
+
+  if (!clienteId) return showToast('Selecciona un cliente');
+  if (!ejercicio) return showToast('Indica el ejercicio');
+  if (!selectedExcelFile) return showToast('Sube el archivo Excel con el balance');
+
+  const cliente = clientesData.find(c => c.id === clienteId);
+  const empresa = cliente?.data?.nombre || 'Empresa';
+
+  // UI: estado generando
+  document.getElementById('btn-generar').disabled = true;
+  document.getElementById('inf-status').classList.remove('hidden');
+  document.getElementById('inf-status').classList.add('flex');
+  document.getElementById('inf-resultado').classList.add('hidden');
+  document.getElementById('inf-error').classList.add('hidden');
+  document.getElementById('inf-status-text').textContent = 'Subiendo archivo...';
+
+  try {
+    // 1. Subir el Excel
+    const formData = new FormData();
+    formData.append('file', selectedExcelFile);
+    const uploadRes = await fetch(`/api/apps/${APP_ID}/storage/upload`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` },
+      body: formData
+    });
+    if (!uploadRes.ok) throw new Error('Error subiendo el archivo Excel');
+    const uploadData = await uploadRes.json();
+    const excelUrl = uploadData.file_url || uploadData.url || uploadData.public_url;
+    if (!excelUrl) throw new Error('No se obtuvo URL del archivo subido');
+
+    // 2. Guardar registro Documento del Excel
+    await createEntity('Documento', {
+      cliente_id: clienteId,
+      expediente_id: expedienteId || null,
+      nombre: selectedExcelFile.name,
+      tipo: 'Balance Excel',
+      url: excelUrl,
+      subido_por: 'Asesor',
+      descripcion: `Balance y PyG ejercicio ${ejercicio}`,
+      ejercicio: ejercicio,
+      estado_generacion: 'Completado'
+    });
+
+    // 3. Pedir al agente que genere el informe
+    document.getElementById('inf-status-text').textContent = 'Generando informe PDF...';
+
+    const agentRes = await fetch(`/api/apps/${APP_ID}/agent/message`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${AUTH_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: `TAREA_AUTOMATICA: Genera el informe financiero PDF con estos datos:
+- Excel URL: ${excelUrl}
+- Empresa: ${empresa}
+- NIF: ${nif || 'No especificado'}
+- Ejercicio: ${ejercicio}
+- Cliente ID: ${clienteId}
+- Expediente ID: ${expedienteId || 'ninguno'}
+Usa el skill generar_y_subir_informe.py y devuelve la URL del PDF generado.`
+      })
+    });
+
+    if (!agentRes.ok) throw new Error('Error al solicitar la generación del informe');
+    const agentData = await agentRes.json();
+    
+    // Buscar URL en la respuesta del agente
+    const responseText = agentData.response || agentData.message || JSON.stringify(agentData);
+    const urlMatch = responseText.match(/https?:\/\/[^\s"<>]+\.pdf/i);
+    
+    if (urlMatch) {
+      const pdfUrl = urlMatch[0];
+      // Guardar documento PDF
+      await createEntity('Documento', {
+        cliente_id: clienteId,
+        expediente_id: expedienteId || null,
+        nombre: `Informe_Financiero_${empresa.replace(/ /g,'_')}_${ejercicio}.pdf`,
+        tipo: 'Informe Financiero PDF',
+        url: pdfUrl,
+        subido_por: 'Sistema',
+        descripcion: `Informe financiero generado automáticamente. Ejercicio ${ejercicio}.`,
+        ejercicio: ejercicio,
+        estado_generacion: 'Completado'
+      });
+
+      document.getElementById('inf-resultado-nombre').textContent = `Informe_Financiero_${empresa}_${ejercicio}.pdf`;
+      document.getElementById('inf-resultado-link').href = pdfUrl;
+      document.getElementById('inf-resultado').classList.remove('hidden');
+      showToast('✅ Informe generado correctamente');
+      renderDocumentos();
+    } else {
+      throw new Error('El informe se está procesando. Consulta la sección de documentos en unos momentos.');
+    }
+
+  } catch (err) {
+    document.getElementById('inf-error-text').textContent = err.message;
+    document.getElementById('inf-error').classList.remove('hidden');
+  } finally {
+    document.getElementById('btn-generar').disabled = false;
+    document.getElementById('inf-status').classList.add('hidden');
+    document.getElementById('inf-status').classList.remove('flex');
+  }
+}
+
+async function createEntity(name, data) {
+  const res = await fetch(`/api/apps/${APP_ID}/entities/${name}`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${AUTH_TOKEN}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
+async function renderDocumentos() {
+  const container = document.getElementById('lista-documentos');
+  const countEl = document.getElementById('docs-count');
+  if (!container) return;
+
+  try {
+    const res = await fetch(`/api/apps/${APP_ID}/entities/Documento?limit=100&sort=-created_date`, {
+      headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+    });
+    const docs = await res.json();
+    const lista = Array.isArray(docs) ? docs : (docs.items || docs.data || []);
+    countEl.textContent = `${lista.length} documentos`;
+
+    if (!lista.length) {
+      container.innerHTML = '<div class="p-8 text-center text-gray-400 text-sm">No hay documentos todavía.</div>';
+      return;
+    }
+
+    container.innerHTML = lista.map(doc => {
+      const d = doc.data || doc;
+      const cliente = clientesData.find(c => c.id === (d.cliente_id || doc.data?.cliente_id));
+      const nombreCliente = cliente?.data?.nombre || '—';
+      const iconos = {
+        'Informe Financiero PDF': 'fa-file-pdf text-red-500',
+        'Balance Excel': 'fa-file-excel text-green-500',
+        'Contrato': 'fa-file-contract text-blue-500',
+        'Factura': 'fa-file-invoice-dollar text-yellow-500',
+        'Declaración': 'fa-file-lines text-purple-500',
+      };
+      const icono = iconos[d.tipo] || 'fa-file text-gray-400';
+      return `
+        <div class="flex items-center justify-between p-4 hover:bg-gray-50 rounded-xl transition">
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <div class="w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid ${icono}"></i>
+            </div>
+            <div class="min-w-0">
+              <p class="font-medium text-gray-800 text-sm truncate">${d.nombre || 'Sin nombre'}</p>
+              <p class="text-xs text-gray-400">${nombreCliente} · ${d.ejercicio ? 'Ejercicio ' + d.ejercicio + ' · ' : ''}${d.tipo || '—'}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 ml-3">
+            ${d.tipo === 'Informe Financiero PDF' ? `<span class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 font-medium">PDF</span>` : ''}
+            ${d.url ? `<a href="${d.url}" target="_blank" class="text-blue-600 hover:text-blue-800 text-xs font-medium flex items-center gap-1 px-3 py-1.5 bg-blue-50 rounded-lg hover:bg-blue-100 transition"><i class="fa-solid fa-download"></i> Descargar</a>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+  } catch(e) {
+    container.innerHTML = '<div class="p-6 text-center text-red-400 text-sm">Error cargando documentos.</div>';
+  }
+}
+
+
+// Init
+loadPortalData();
+</script>
+</body>
+</html>
